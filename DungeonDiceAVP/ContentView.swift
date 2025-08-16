@@ -13,7 +13,9 @@ struct ContentView: View {
     @State private var resultMessage: String = ""
     @State private var imageHidden: Bool = true
     
-    enum Dice: Int, CaseIterable {
+    enum Dice: Int, CaseIterable, Identifiable {
+
+        
         case four = 4
         case six = 6
         case eight = 8
@@ -21,6 +23,14 @@ struct ContentView: View {
         case twelve = 12
         case twenty = 20
         case hundred = 100
+        
+        var id: Int {
+            return self.rawValue    // Each rawValue is unique in the Dice enum
+        }
+        
+        var description: String {
+            return String(self.rawValue) + "-Sided"
+        }
         
         func roll() -> Int {    // Return a Random Roll based on the number of Dice Sides
             return Int.random(in: 1...self.rawValue)
@@ -31,10 +41,10 @@ struct ContentView: View {
         VStack {
 
             Text("Dungeon Dice")
-                .font(.largeTitle)
+                .font(.extraLargeTitle)
                 .fontWeight(.black)
                 .foregroundColor(.red)
-            
+
             Spacer()
             
             if !imageHidden{
@@ -53,9 +63,9 @@ struct ContentView: View {
             
             Spacer()
 
-            LazyHGrid(rows: [GridItem(.flexible(minimum: 100))]) {
-                ForEach(Dice.allCases, id: \.self) { die in
-                    Button("\(die.rawValue)-Sided") {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 172))], spacing: 60) {
+                ForEach(Dice.allCases) { die in
+                    Button(die.description) {
                         resultMessage = "You rolled a \(die.roll()) on a \(die)-sided die!"
                         imageHidden = false
                     }
